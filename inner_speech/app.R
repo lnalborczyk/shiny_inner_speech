@@ -7,6 +7,7 @@
 #####################################################################
 
 # loading the required packages
+library(shinyWidgets)
 library(shinyhelper)
 library(shinythemes)
 library(base64enc)
@@ -28,23 +29,38 @@ url <- "https://twitter.com/intent/tweet?text=Find%20out%20how%20your%20inner%20
 
 ui <- fluidPage(
 
-    # Application title
+    # application title
     titlePanel("How does your voice sound?"),
+    tags$h3("Modify the voice until it matches how you hear it in your head"),
 
-    # Uploading an audio file
+    # choosing a theme
+    # themeSelector(), # cerulean, spacelab, readable
+    
+    # setting a theme
+    theme = shinytheme("spacelab"),
+    
+    # uploading an audio file
     sidebarLayout(
         sidebarPanel(
+            fluidRow(h3("Step 1: Getting some sound") ),
+            tags$br(),
             fileInput(
                 inputId = "uploaded_audio",
                 label = "Pick an audio file (wav/mp3)",
                 multiple = FALSE,
                 accept = c(".wav", "audio/*")
                 ),
+            tags$p(strong("Or record your voice from the mic:") ),
             actionButton(
                 inputId = "recorded_audio",
-                label = "Or record your voice from the mic",
+                label = "Record audio",
+                icon = icon("microphone"),
                 multiple = FALSE
                 ),
+            # tags$br(),
+            tags$hr(),
+            fluidRow(h3("Step 2: Manipulating the sound") ),
+            tags$br(),
             sliderInput(
                 inputId = "pitch",
                 label = "Select a pitch increment/decrement (in semitones)",
@@ -54,6 +70,9 @@ ui <- fluidPage(
                 step = 1,
                 width = "500px"
                 ),
+            tags$hr(),
+            fluidRow(h3("Step 3: Sharing your mental representation") ),
+            tags$br(),
             # https://stackoverflow.com/questions/62052804/is-there-a-way-to-add-share-buttons-to-make-plots-shareable-in-shiny
             actionButton(
                 inputId = "tweet",
@@ -63,14 +82,22 @@ ui <- fluidPage(
                 onclick = sprintf("window.open('%s')", url)
                 )
             ),
-
         mainPanel(
             # playing the uploaded audio signal
             actionButton(inputId = "play_audio", label = "Play Audio"),
             plotOutput(outputId = "audio_signal_plot")
             
         )
-    )
+    ),
+    
+    # including a footer
+    tags$hr(),
+    HTML(
+        paste(
+            "Written by <a href='https://www.barelysignificant.com'>
+                    Ladislas Nalborczyk</a>. Last update: December 4, 2022"
+            )
+        )
 )
 
 ################################################################################
