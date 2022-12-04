@@ -4,6 +4,6 @@ This is kind of the auditory/voice analogous of the [Imagination Spectrum app](h
 
 Application available at: <https://barelysignificant.shinyapps.io/inner_speech>.
 
-** !! Work in progress !! **
+## Work in progress !!
 
 <img src="demo.png" align="center" width="800px">

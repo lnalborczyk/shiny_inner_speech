@@ -10,8 +10,7 @@
 library(shinyWidgets)
 library(shinyhelper)
 library(shinythemes)
-# library(base64enc)
-# library(shinysense)
+library(base64enc)
 library(tidyverse)
 library(phonTools)
 library(patchwork)
@@ -144,7 +143,7 @@ server <- function (input, output) {
                 )
             
             # playing it
-            audio::play(x = recorded_audio)
+            # audio::play(x = recorded_audio)
             
             # terminating the function
             # removeModal()
@@ -160,11 +159,25 @@ server <- function (input, output) {
             # refreshing the input
             input$refresh
             
+            # old code
+            # req(input$uploaded_audio)
+            
             if (!is_null(input$uploaded_audio) ) {
+            # if (req(input$uploaded_audio) ) {
+                
+                base64 <- dataURI(file = input$uploaded_audio$datapath, mime = "audio/wav")
+                
+                insertUI(
+                    selector = "#play_audio", where = "afterEnd",
+                    ui = tags$audio(
+                        src = base64, type = "audio/wav",
+                        autoplay = NA, controls = NA,
+                        style = "display:none;"
+                        )
+                    )
                 
                 # setWavPlayer(command = "afplay")
-                # sound::play(s = sound::noSilence(input$uploaded_audio$datapath) )
-                sound::play(s = input$uploaded_audio$datapath)
+                # sound::play(s = input$uploaded_audio$datapath)
                 
                 # a <- audio::load.wave(where = "horse.wav")
                 # audio::play(a)
@@ -186,18 +199,8 @@ server <- function (input, output) {
                 
             }
             
-            # old code
-            # input$refresh
-            # req(input$uploaded_audio)
+        }
         
-            # base64 <- dataURI(file = input$uploaded_audio$datapath, mime = "audio/wav")
-        
-            # insertUI(
-            #     selector = "#play_audio", where = "afterEnd",
-            #     ui = tags$audio(src = base64, type = "audio/wav", autoplay = NA, controls = NA)  
-            #     )
-            
-            }
         )
     
     output$audio_signal_plot <-
