@@ -10,7 +10,8 @@
 library(shinyWidgets)
 library(shinyhelper)
 library(shinythemes)
-library(base64enc)
+# library(base64enc)
+# library(shinysense)
 library(tidyverse)
 library(phonTools)
 library(patchwork)
@@ -19,22 +20,25 @@ library(audio)
 library(sound)
 library(shiny)
 library(tuneR)
-library(av)
+# library(av)
 
 ################################################################################
 ############################# USER INTERFACE ###################################
 ################################################################################
 
-url <- "https://twitter.com/intent/tweet?text=Find%20out%20how%20your%20inner%20voice%20sounds&url=https://shiny.rstudio.com/gallery/widget-gallery.html/"
+# defining the URL for sharing the shiny app on twitter
+url <- "https://twitter.com/intent/tweet?text=Find%20out%20how%20your%20inner%20voice%20sounds&url=https://barelysignificant.shinyapps.io/inner_speech"
 
+# setting up the user interface
 ui <- fluidPage(
 
-    # application title
+    # application's title
     titlePanel("How does it sound in your head?"),
     tags$h3("Imagine saying 'horse' and modify the voice until it matches how you hear it in your head"),
 
     # choosing a theme
-    # themeSelector(), # flatly, cerulean, spacelab, readable
+    # some nice themes: flatly, cerulean, spacelab, readable
+    # themeSelector(),
     
     # setting a theme
     theme = shinytheme("flatly"),
@@ -43,10 +47,11 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             fluidRow(h3("Step 1: Getting some sound") ),
+            # shinylistenr_UI("myrecorder"),
             tags$br(),
             fileInput(
                 inputId = "uploaded_audio",
-                label = "Pick an audio file (wav/mp3)",
+                label = "Pick an audio file (should be a .wav file)",
                 multiple = FALSE,
                 accept = c(".wav", "audio/*")
                 ),
@@ -57,7 +62,6 @@ ui <- fluidPage(
                 icon = icon("microphone"),
                 multiple = FALSE
                 ),
-            # tags$br(),
             tags$hr(),
             fluidRow(h3("Step 2: Manipulating the sound") ),
             tags$br(),
@@ -88,9 +92,11 @@ ui <- fluidPage(
                 inputId = "play_audio",
                 label = "Click here to play the audio file"
                 ),
+            htmlOutput("no_audio"),
             plotOutput(outputId = "audio_signal_plot")
-        )
-    ),
+            )
+        
+        ),
     
     # including a footer
     tags$hr(),
@@ -109,16 +115,19 @@ ui <- fluidPage(
 
 server <- function (input, output) {
     
+    # callModule(shinylistenr, "myrecorder")
+    
     observeEvent(
+    # eventReactive(
         
         input$record_audio, {
             
             # refreshing the input
-            input$refresh
+            # input$refresh
             
             # display a wheel while recording
             # https://stackoverflow.com/questions/17325521/r-shiny-display-loading-message-while-function-is-running
-            showModal(modalDialog(title = "Recording...", footer = NULL, size = "l", fade = FALSE) )
+            # showModal(modalDialog(title = "Recording...", footer = NULL, size = "l", fade = FALSE) )
             
             # code from https://books.psychstat.org/rdata/audio-data.html
             # initialise an empty vectors
@@ -128,13 +137,17 @@ server <- function (input, output) {
             length_in_seconds <- 2
             
             # recording
-            record(where = recorded_audio, rate = 44100 / length_in_seconds, channels = 1)
+            audio::record(
+                where = recorded_audio,
+                rate = 44100 / length_in_seconds,
+                channels = 1
+                )
             
             # playing it
-            # audio::play(recorded_audio)
+            audio::play(x = recorded_audio)
             
             # terminating the function
-            removeModal()
+            # removeModal()
             
         }
             
@@ -150,16 +163,26 @@ server <- function (input, output) {
             if (!is_null(input$uploaded_audio) ) {
                 
                 # setWavPlayer(command = "afplay")
+                # sound::play(s = sound::noSilence(input$uploaded_audio$datapath) )
                 sound::play(s = input$uploaded_audio$datapath)
                 
-            # } else if (!is_null(recorded_audio) ) {
-            } else if (exists(recorded_audio) ) {
+                # a <- audio::load.wave(where = "horse.wav")
+                # audio::play(a)
+                # pitch(s = a, semitones = -2)
+                # b <- sound::as.Sample(sound = a, rate = 22050)
+                # sound::noSilence(b)
+                # sound::play(sound::noSilence(b) )
+                # sound::play(pitch(sound::noSilence(b), 10) )
                 
-                audio::play(x = recorded_audio)
+            # } else if (!is_null(recorded_audio) ) {
+            # } else if (exists(recorded_audio) ) {
+                
+            #     audio::play(x = recorded_audio)
                 
             } else {
                 
                 print("No audio file detected...")
+                output$no_audio <- renderText(expr = "No audio file detected...")
                 
             }
             

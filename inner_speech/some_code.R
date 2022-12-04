@@ -20,7 +20,7 @@ library(av)
 
 # see also https://books.psychstat.org/rdata/audio-data.html
 # importing the audio file
-son <- readWave("base_sound_trimmed.wav")
+son <- readWave("horse.wav")
 play(son)
 
 # computing the spectrogram
@@ -114,22 +114,32 @@ library(sound)
 
 findWavPlayer()
 WavPlayer()
-setWavPlayer(command=NULL)
-
 setWavPlayer(command = "afplay")
 
-a <- pitch(s = "base_sound_trimmed.wav", semitones = -2)
-pitch(s = "base_sound_trimmed.wav", semitones = -2) %>% play()
-play(s = "base_sound_trimmed.wav")
-play(pitch(son,-12))
+###### this works!!
+a <- audio::load.wave(where = "horse.wav")
+# audio::play(a)
+# pitch(s = a, semitones = -2)
+b <- sound::as.Sample(sound = a, rate = 22050)
+sound::noSilence(b)
+sound::play(sound::noSilence(b) )
+sound::play(pitch(sound::noSilence(b), 10) )
+########
 
-a <- pitch(s = "base_sound_trimmed.wav", semitones = -2)
+a <- sound::pitch(s = "horse.wav", semitones = 1)
+b <- sound::play(s = "horse.wav")
+sound::play(a)
+
+a <- pitch(s = "horse.wav", semitones = -2)
+pitch(s = "horse.wav", semitones = -2) %>% play()
+play(s = "horse.wav")
+
+a <- pitch(s = "horse.wav", semitones = -2)
 playsound(sound = a$sound[1, ])
 
-playsound(sound = a$sound[1, ])
+phonTools::play(a$sound[1, ])
 
-
-s <- Sine(440,1)
+s <- Sine(440, 1)
 play(s)
 
 # record a sound from R

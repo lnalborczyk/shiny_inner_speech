@@ -1,0 +1,14 @@
+name: inner_speech
+title: inner_speech
+username:
+account: barelysignificant
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7808048
+bundleId: 6589264
+url: https://barelysignificant.shinyapps.io/inner_speech/
+when: 1670164203.96197
+lastSyncTime: 1670164203.96199
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: some_code.R
