@@ -21,6 +21,7 @@ library(av)
 # see also https://books.psychstat.org/rdata/audio-data.html
 # importing the audio file
 son <- readWave("base_sound_trimmed.wav")
+play(son)
 
 # computing the spectrogram
 spectrogramme <- spectro(
@@ -125,8 +126,8 @@ play(pitch(son,-12))
 a <- pitch(s = "base_sound_trimmed.wav", semitones = -2)
 playsound(sound = a$sound[1, ])
 
-library(tuneR)
-tuneR::play(object = a$sound[1, ])
+playsound(sound = a$sound[1, ])
+
 
 s <- Sine(440,1)
 play(s)
